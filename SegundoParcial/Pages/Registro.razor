@@ -26,7 +26,7 @@
         <div class="container">
 
             <label for="Limite" class="col-md-2 col-form-label">Limite</label>
-            <input type="number" id="Limite" class="col-md-2 form-check" @bind="inscripciones.Limite" />
+            <input type="number" id="Limite" class="col-md-2 form-check" @bind="inscripciones.Limite"@onfocus="Mostrar" @onfocusin="Mostrar" @onfocusout="Mostrar" />
             <ValidationMessage For="@(() => inscripciones.Limite)" />
 
         </div>
@@ -73,7 +73,7 @@
 
     private void Guardar()
     {
-        if(inscripciones.Limite < inscripciones.Tomados)
+        if(inscripciones.Limite > inscripciones.Tomados)
         {
             if(inscripciones.InscripcionId == 0)
             {
@@ -93,7 +93,7 @@
             }
         }else
         {
-            Mensaje = "El Monto no puede ser mayor al Limite";
+            Mensaje = "El Tomados no puede ser mayor al Limite";
         }
 
 
