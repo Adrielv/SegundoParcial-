@@ -1,0 +1,50 @@
+﻿@page "/consulta"
+@using SegundoParcial.Controllers
+@using SegundoParcial.Models
+@using SegundoParcial.Data
+
+<h1>Consulta</h1>
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>InscripcionId</th>
+            <th>Semestre</th>
+            <th>Limite</th>
+            <th>Tomados</th>
+            <th>Disponible</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var inscripcion in listaInscripcion)
+        {
+            <tr>
+                <th>@inscripcion.InscripcionId</th>
+                <th>@inscripcion.Semestre</th>
+                <th>@inscripcion.Limite</th>
+                <th>@inscripcion.Tomados</th>
+                <th>@inscripcion.Disponibles</th>
+            </tr>
+
+        }
+    </tbody>
+
+
+</table>
+
+
+@code {
+
+    public List<Inscripciones> listaInscripcion { get; set; }
+    public ControllersInscripcion controllersInscripcion = new ControllersInscripcion();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        listaInscripcion = controllersInscripcion.GetList(P => true);
+
+    }
+
+}

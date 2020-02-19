@@ -1,10 +1,157 @@
 ﻿@page "/registro"
+@using SegundoParcial.Controllers
+@using SegundoParcial.Models
+@using SegundoParcial.Data
 
 
+    <EditForm Model="@inscripciones" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <div class="container">
+
+            <label for="InscripcionesId" class="col-md-2 col-form-label">InscripcionesId</label>
+            <input type="number" id="InscripcionesId" class="col-md-2 form-check" @bind="inscripciones.InscripcionId" />
+            <ValidationMessage For="@(() => inscripciones.InscripcionId)" />
+            <br />
+
+            <button type="button" class="col-md-2 btn btn-info" @onclick="Buscar">Buscar</button>
+
+        </div>
+        <div class="container">
+
+            <label for="Semestre" class="col-md-2 col-form-label">Semestre</label>
+            <input type="text" id="Semestre" class="col-md-2 form-check" @bind="inscripciones.Semestre" />
+            <ValidationMessage For="@(() => inscripciones.Semestre)" />
+
+        </div>
+        <div class="container">
+
+            <label for="Limite" class="col-md-2 col-form-label">Limite</label>
+            <input type="number" id="Limite" class="col-md-2 form-check" @bind="inscripciones.Limite" />
+            <ValidationMessage For="@(() => inscripciones.Limite)" />
+
+        </div>
+        <div class="container">
+
+            <label for="Tomados" class="col-md-2 col-form-label">Tomados</label>
+            <input type="number" id="Tomados" class="col-md-2 form-check" @bind="inscripciones.Tomados" @onfocus="Mostrar" @onfocusin="Mostrar" @onfocusout="Mostrar"/>
+            <ValidationMessage For="@(() => inscripciones.Tomados)" />
+
+        </div>
+        <div class="container">
+
+            <label for="Disponible" class="col-md-2 col-form-label">Disponible</label>
+            <input type="number" id="Disponible" class="col-md-2 form-check" @bind="inscripciones.Disponibles" readonly="readonly" />
+            <ValidationMessage For="@(() => inscripciones.Disponibles)" />
+
+        </div>
+        <br />
+
+        <ValidationSummary />
+
+        <div class="form-group">
+
+            <button type="submit" class="col-md-2 btn btn-success">Guardar</button>
+            <button type="button" class="col-md-2 btn btn-primary" @onclick="Limpiar">Limpiar</button>
+            <button type="button" class="col-md-2 btn btn-danger" @onclick="Eliminar">Eliminar</button>
+
+
+        </div>
+
+        <h1>@Mensaje</h1>
+
+
+    </EditForm>
 
 
 
 
 @code {
+    private ControllersInscripcion controllersInscripcion = new ControllersInscripcion();
+    private Inscripciones inscripciones = new Inscripciones();
+    public string Mensaje;
+
+
+    private void Guardar()
+    {
+        if(inscripciones.Limite < inscripciones.Tomados)
+        {
+            if(inscripciones.InscripcionId == 0)
+            {
+                controllersInscripcion.Guardar(inscripciones);
+                Mensaje = "Guardo";
+                Limpiar();
+            }
+            else
+            {
+                if(controllersInscripcion.Buscar(inscripciones.InscripcionId) != null)
+                {
+                    controllersInscripcion.Modificar(inscripciones);
+                    Mensaje = "Modifico";
+                    Limpiar();
+                }
+
+            }
+        }else
+        {
+            Mensaje = "El Monto no puede ser mayor al Limite";
+        }
+
+
+    }
+    private void Limpiar()
+    {
+        inscripciones = new Inscripciones();
+
+    }
+    private void Eliminar()
+    {
+        if(inscripciones.InscripcionId != 0)
+        {
+            if(controllersInscripcion.Buscar(inscripciones.InscripcionId) != null)
+            {
+
+                controllersInscripcion.Eliminar(inscripciones.InscripcionId);
+                Mensaje = "Eliminado";
+                Limpiar();
+
+            }else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }else
+        {
+            Mensaje = "Selecione un ID";
+        }
+
+
+    }
+    private void Buscar()
+    {
+        if(inscripciones.InscripcionId != 0)
+        {
+            if(controllersInscripcion.Buscar(inscripciones.InscripcionId) != null)
+            {
+
+                inscripciones = controllersInscripcion.Buscar(inscripciones.InscripcionId);
+
+            }else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }else
+        {
+            Mensaje = "Selecione un ID";
+        }
+
+
+    }
+    private void Mostrar()
+    {
+        inscripciones.Disponibles = inscripciones.Limite - inscripciones.Tomados;
+    }
+
+
 
 }
